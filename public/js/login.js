@@ -33,7 +33,6 @@ loginForm.addEventListener("submit", async (e) => {
     Swal.fire({
       icon: "error",
       title: "Login Failed",
-      text: result.message,
     });
   }
 });
