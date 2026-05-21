@@ -1,22 +1,24 @@
 const db = require("../config/db");
 
 // REGISTER STUDENT
-exports.registerStudent = async (req, res) => {
-  const { fullname, email, matric_number, password } = req.body;
+exports.registerStudent = (req, res) => {
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { fullname, email, matric_number, password } = req.body;
 
   const sql = `
     INSERT INTO students(fullname, email, matric_number, password)
     VALUES (?, ?, ?, ?)
-`;
+  `;
 
   db.query(
     sql,
-    [fullname, email, matric_number, hashedPassword],
+    [fullname, email, matric_number, password],
     (err, result) => {
+
       if (err) {
+
         console.log(err);
+
         return res.status(500).json({
           message: "Registration failed",
         });
@@ -25,47 +27,46 @@ exports.registerStudent = async (req, res) => {
       res.json({
         message: "Registration successful",
       });
-    },
+    }
   );
 };
 
 // LOGIN STUDENT
-exports.loginStudent = async (req, res) => {
+exports.loginStudent = (req, res) => {
+
   const { email, password } = req.body;
 
   const sql = `
-        SELECT * FROM students
-        WHERE email = ?
-    `;
+    SELECT * FROM students
+    WHERE email = ? AND password = ?
+  `;
 
-  db.query(sql, [email], async (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: "Login error",
-      });
-    }
+  db.query(
+    sql,
+    [email, password],
+    (err, result) => {
 
-    if (result.length > 0) {
-      const student = result[0];
+      if (err) {
 
-      const isMatch = await bcrypt.compare(password, student.password);
+        return res.status(500).json({
+          message: "Login error",
+        });
+      }
 
-      if (isMatch) {
+      if (result.length > 0) {
+
         res.json({
           success: true,
-          student,
+          student: result[0],
         });
+
       } else {
+
         res.json({
           success: false,
           message: "Invalid email or password",
         });
       }
-    } else {
-      res.json({
-        success: false,
-        message: "Invalid email or password",
-      });
     }
-  });
+  );
 };
