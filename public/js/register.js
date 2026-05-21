@@ -32,7 +32,6 @@ registerForm.addEventListener("submit", async (e) => {
   Swal.fire({
     icon: "success",
     title: "Success",
-    text: result.message,
   });
 
   if (result.message === "Registration successful") {
