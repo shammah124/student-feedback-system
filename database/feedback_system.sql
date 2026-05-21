@@ -1,0 +1,44 @@
+CREATE DATABASE IF NOT EXISTS feedback_system;
+
+USE feedback_system;
+
+-- STUDENTS TABLE
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    matric_number VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ADMINS TABLE
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- COMPLAINTS TABLE
+CREATE TABLE complaints (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'Pending',
+    admin_response TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (student_id)
+    REFERENCES students(id)
+    ON DELETE CASCADE
+);
+
+-- INSERT DEFAULT ADMIN
+INSERT INTO admins (username, password)
+VALUES (
+    'admin',
+    '$2a$10$7EqJtq98hPqEX7fNZaFWoOHi6M9B4u6fQ6K7l1YI7DiIP9N6byN6'
+);
