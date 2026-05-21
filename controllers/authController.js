@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const db = require("../config/db");
 
 // REGISTER STUDENT
